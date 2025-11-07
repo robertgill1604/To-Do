@@ -34,6 +34,17 @@ A modern, responsive to-do list application built with HTML, CSS, and JavaScript
 - **Responsive Design**: Mobile-first approach with media queries
 - **Local Storage**: Tasks are saved automatically and persist between sessions
 
+## How Tasks Are Stored Without a Database
+
+This application runs entirely in the browser, so it does not require a server-side database. Every task you create is stored in the browser's [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) under the `todos` key as a JSON string. When the page loads, the app reads that value, parses it back into JavaScript objects, and restores your task list automatically.
+
+Because storage lives in the browser:
+- Tasks persist for the same browser and device, even after refreshes.
+- Clearing site data or using a private/incognito window removes the saved tasks.
+- Tasks are not shared or synced between different browsers or devices. A backend service would be required for multi-device syncing.
+
+You can inspect the stored data by opening your browser's developer tools, navigating to the Application/Storage tab, and checking Local Storage for the current site.
+
 ## File Structure
 
 ```
