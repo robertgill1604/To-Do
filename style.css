@@ -6,20 +6,31 @@
 
 /* Custom CSS variables for animations */
 :root {
-    --transition-fast: 0.15s ease;
-    --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     --stagger-delay: 0.1s;
+    --neon-primary: #00ffff;
+    --neon-secondary: #ff00ff;
+    --neon-accent: #00ff00;
+    --neon-glow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary);
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #2d0052 100%);
     min-height: 100vh;
     padding: 20px;
     line-height: 1.6;
-    animation: gradientShift 10s ease infinite;
+    animation: neonGradientShift 15s ease infinite;
     background-size: 200% 200%;
+    position: relative;
+}
+
+@keyframes neonGradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 @keyframes gradientShift {
@@ -31,12 +42,14 @@ body {
 .container {
     max-width: 600px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.97);
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 40px rgba(0, 255, 255, 0.2), 0 0 60px rgba(255, 0, 255, 0.15);
     overflow: hidden;
     backdrop-filter: blur(10px);
     animation: containerEntrance 0.6s ease-out;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    position: relative;
 }
 
 @keyframes containerEntrance {
@@ -55,6 +68,8 @@ body {
     color: white;
     padding: 30px;
     text-align: center;
+    box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.15), 0 8px 32px rgba(0, 255, 255, 0.2);
+    position: relative;
 }
 
 .header h1 {
@@ -63,6 +78,7 @@ body {
     letter-spacing: 2px;
     margin: 0;
     animation: titleSlide 0.8s ease-out 0.3s both;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(255, 0, 255, 0.3);
 }
 
 @keyframes titleSlide {
@@ -95,12 +111,13 @@ body {
     transition: all var(--transition-normal);
     background: white;
     animation: inputSlide 0.6s ease-out 0.5s both;
+    will-change: box-shadow, border-color;
 }
 
 .todo-input:focus {
     outline: none;
     border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), inset 0 0 10px rgba(0, 255, 255, 0.1), 0 0 15px rgba(0, 255, 255, 0.2);
     transform: scale(1.02);
 }
 
@@ -128,6 +145,8 @@ body {
     position: relative;
     overflow: hidden;
     animation: buttonSlide 0.6s ease-out 0.6s both;
+    will-change: box-shadow, transform;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .add-btn::before {
@@ -150,7 +169,7 @@ body {
 
 .add-btn:hover {
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.6), 0 0 60px rgba(102, 126, 234, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .add-btn:active {
@@ -189,6 +208,7 @@ body {
     color: #6c757d;
     position: relative;
     overflow: hidden;
+    will-change: box-shadow, transform;
 }
 
 .filter-btn::after {
@@ -212,7 +232,7 @@ body {
 .filter-btn:hover {
     background: #e9ecef;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 255, 255, 0.2);
 }
 
 .filter-btn.active {
@@ -220,11 +240,12 @@ body {
     color: white;
     border-color: transparent;
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3), 0 0 20px rgba(0, 255, 255, 0.4);
 }
 
 .filter-btn.active:hover {
     transform: scale(1.08) translateY(-1px);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5), 0 0 30px rgba(0, 255, 255, 0.6);
 }
 
 @keyframes filterSlide {
@@ -269,6 +290,7 @@ body {
     animation: slideIn 0.4s ease-out;
     position: relative;
     overflow: hidden;
+    will-change: box-shadow, border-color, transform;
 }
 
 .todo-item::before {
@@ -281,6 +303,7 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     transform: scaleY(0);
     transition: transform var(--transition-normal);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
 }
 
 .todo-item:hover::before {
@@ -299,7 +322,7 @@ body {
 }
 
 .todo-item:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 255, 255, 0.3);
     transform: translateY(-3px) translateX(5px);
     border-color: #667eea;
 }
@@ -316,18 +339,26 @@ body {
 .todo-item:nth-child(9) { animation-delay: calc(var(--stagger-delay) * 8); }
 .todo-item:nth-child(10) { animation-delay: calc(var(--stagger-delay) * 9); }
 
-/* Remove animation */
+/* Remove animation - smooth delete with box model preservation */
 .todo-item.removing {
-    animation: slideOut 0.4s ease-out forwards;
+    animation: neonSlideOut 0.45s cubic-bezier(0.45, 0, 0.55, 1) forwards;
 }
 
-@keyframes slideOut {
-    to {
+@keyframes neonSlideOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scaleX(1) rotateZ(0deg);
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.2);
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+    100% {
         opacity: 0;
-        transform: translateX(100%) scale(0.8);
-        margin-bottom: 0;
-        padding: 0;
-        max-height: 0;
+        transform: translateX(110%) scaleX(0.5) rotateZ(5deg);
+        filter: brightness(0.5);
+        box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
     }
 }
 
@@ -404,6 +435,7 @@ body {
     font-weight: 500;
     position: relative;
     overflow: hidden;
+    will-change: box-shadow, transform;
 }
 
 .edit-btn::before, .delete-btn::before {
@@ -427,23 +459,25 @@ body {
 .edit-btn {
     background: #28a745;
     color: white;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
 }
 
 .edit-btn:hover {
     background: #218838;
     transform: scale(1.1) translateY(-1px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3), 0 0 15px rgba(0, 255, 0, 0.3);
 }
 
 .delete-btn {
     background: #dc3545;
     color: white;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.2);
 }
 
 .delete-btn:hover {
     background: #c82333;
     transform: scale(1.1) translateY(-1px);
-    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3), 0 0 15px rgba(255, 0, 0, 0.3);
 }
 
 .edit-btn:active, .delete-btn:active {
@@ -457,6 +491,10 @@ body {
     padding: 20px 0;
     border-top: 2px solid #e1e5e9;
     animation: statsSlide 0.6s ease-out 0.9s both;
+    box-shadow: inset 0 10px 20px rgba(0, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 -30px -30px -30px;
 }
 
 @keyframes statsSlide {
@@ -475,16 +513,27 @@ body {
     font-size: 14px;
     font-weight: 500;
     transition: all var(--transition-normal);
+    will-change: transform, color;
 }
 
 #todoCount.updating {
-    animation: countPulse 0.3s ease-out;
+    animation: neonCountPulse 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes countPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); color: #667eea; }
-    100% { transform: scale(1); }
+@keyframes neonCountPulse {
+    0% { 
+        transform: scale(1); 
+        text-shadow: none;
+    }
+    50% { 
+        transform: scale(1.15); 
+        color: #667eea;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+    }
+    100% { 
+        transform: scale(1);
+        text-shadow: none;
+    }
 }
 
 .clear-btn {
@@ -499,6 +548,8 @@ body {
     font-weight: 500;
     position: relative;
     overflow: hidden;
+    will-change: box-shadow, transform;
+    box-shadow: 0 0 10px rgba(108, 117, 125, 0.2);
 }
 
 .clear-btn::before {
@@ -522,7 +573,7 @@ body {
 .clear-btn:hover:not(:disabled) {
     background: #5a6268;
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3), 0 0 15px rgba(100, 200, 255, 0.3);
 }
 
 .clear-btn:active:not(:disabled) {
@@ -545,6 +596,8 @@ body {
     padding: 40px 20px;
     color: #6c757d;
     animation: emptyStateFade 0.5s ease-out;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(255, 0, 255, 0.05) 100%);
 }
 
 @keyframes emptyStateFade {
@@ -561,13 +614,20 @@ body {
 .empty-state-icon {
     font-size: 48px;
     margin-bottom: 10px;
-    opacity: 0.5;
-    animation: iconBounce 2s ease-in-out infinite;
+    opacity: 0.8;
+    animation: neonIconBounce 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
 }
 
-@keyframes iconBounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+@keyframes neonIconBounce {
+    0%, 100% { 
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
+    }
+    50% { 
+        transform: translateY(-12px) scale(1.1);
+        filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.6));
+    }
 }
 
 .empty-state-text {
@@ -595,6 +655,7 @@ body {
     margin-right: 10px;
     animation: editInputFocus 0.3s ease-out;
     transition: all var(--transition-normal);
+    will-change: box-shadow, border-color, transform;
 }
 
 @keyframes editInputFocus {
@@ -610,8 +671,9 @@ body {
 
 .edit-input:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), inset 0 0 10px rgba(0, 255, 255, 0.15), 0 0 15px rgba(0, 255, 255, 0.3);
     transform: scale(1.02);
+    border-color: #667eea;
 }
 
 .save-btn, .cancel-btn {
@@ -624,6 +686,7 @@ body {
     font-weight: 500;
     position: relative;
     overflow: hidden;
+    will-change: box-shadow, transform;
 }
 
 .save-btn::before, .cancel-btn::before {
@@ -648,23 +711,25 @@ body {
     background: #28a745;
     color: white;
     margin-right: 5px;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
 }
 
 .save-btn:hover {
     background: #218838;
     transform: scale(1.1) translateY(-1px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3), 0 0 15px rgba(0, 255, 0, 0.3);
 }
 
 .cancel-btn {
     background: #6c757d;
     color: white;
+    box-shadow: 0 0 10px rgba(108, 117, 125, 0.2);
 }
 
 .cancel-btn:hover {
     background: #5a6268;
     transform: scale(1.1) translateY(-1px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3), 0 0 15px rgba(100, 200, 255, 0.3);
 }
 
 .save-btn:active, .cancel-btn:active {
@@ -676,6 +741,7 @@ body {
     .container {
         margin: 10px;
         border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 30px rgba(0, 255, 255, 0.15), 0 0 50px rgba(255, 0, 255, 0.1);
     }
     
     .header {
@@ -692,44 +758,70 @@ body {
     
     .todo-input-container {
         flex-direction: column;
+        gap: 12px;
+    }
+    
+    .todo-input {
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+    
+    .add-btn {
+        padding: 14px 24px;
+        font-size: 14px;
     }
     
     .filter-container {
         flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .filter-btn {
+        padding: 7px 14px;
+        font-size: 12px;
     }
     
     .stats {
         flex-direction: column;
         gap: 15px;
         text-align: center;
+        margin: 0 -20px -20px -20px;
     }
     
     .todo-item {
         padding: 12px;
+        margin-bottom: 8px;
     }
     
     .todo-text {
         font-size: 14px;
     }
+    
+    .edit-btn, .delete-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
 }
 
 /* Scrollbar Styling */
 .todo-list::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .todo-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(255, 0, 255, 0.05) 100%);
+    border-radius: 4px;
 }
 
 .todo-list::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
 }
 
 .todo-list::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
 }
 
 /* Additional animations and improvements */
@@ -777,6 +869,14 @@ body {
 /* Smooth transitions for all interactive elements */
 button, input, .todo-item {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: auto;
+}
+
+/* Smooth and responsive animations */
+@supports (backdrop-filter: blur(10px)) {
+    .container {
+        backdrop-filter: blur(10px);
+    }
 }
 
 /* Focus visible improvements */
