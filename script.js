@@ -107,7 +107,8 @@ class TodoApp {
                     this.saveTodos();
                     this.render();
                     this.updateStats();
-                }, 400);
+                    this.showMessage('Task deleted successfully', 'success');
+                }, 450);
             } else {
                 this.todos = this.todos.filter(t => t.id !== id);
                 this.saveTodos();
