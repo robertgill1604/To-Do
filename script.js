@@ -37,7 +37,11 @@ class TodoApp {
         const text = input.value.trim();
         
         if (text === '') {
-            this.showMessage('Please enter a task');
+            this.showMessage('Please enter a task', 'error');
+            input.style.animation = 'shake 0.3s ease-in-out';
+            setTimeout(() => {
+                input.style.animation = '';
+            }, 300);
             return;
         }
 
@@ -55,6 +59,13 @@ class TodoApp {
         
         input.value = '';
         input.focus();
+        
+        // Add success animation to the add button
+        const addBtn = document.getElementById('addBtn');
+        addBtn.style.animation = 'success 0.4s ease-out';
+        setTimeout(() => {
+            addBtn.style.animation = '';
+        }, 400);
     }
 
     toggleTodo(id) {
@@ -62,17 +73,47 @@ class TodoApp {
         if (todo) {
             todo.completed = !todo.completed;
             this.saveTodos();
-            this.render();
-            this.updateStats();
+            
+            // Animate the toggle before re-rendering
+            const todoElement = document.querySelector(`[data-id="${id}"]`);
+            if (todoElement) {
+                const checkbox = todoElement.querySelector('.todo-checkbox');
+                const text = todoElement.querySelector('.todo-text');
+                
+                if (todo.completed) {
+                    todoElement.classList.add('completed');
+                    text.style.animation = 'strikethrough 0.3s ease-out forwards';
+                } else {
+                    todoElement.classList.remove('completed');
+                    text.style.animation = 'none';
+                    text.style.textDecoration = 'none';
+                }
+            }
+            
+            setTimeout(() => {
+                this.render();
+                this.updateStats();
+            }, 300);
         }
     }
 
     deleteTodo(id) {
         if (confirm('Are you sure you want to delete this task?')) {
-            this.todos = this.todos.filter(t => t.id !== id);
-            this.saveTodos();
-            this.render();
-            this.updateStats();
+            const todoElement = document.querySelector(`[data-id="${id}"]`);
+            if (todoElement) {
+                todoElement.classList.add('removing');
+                setTimeout(() => {
+                    this.todos = this.todos.filter(t => t.id !== id);
+                    this.saveTodos();
+                    this.render();
+                    this.updateStats();
+                }, 400);
+            } else {
+                this.todos = this.todos.filter(t => t.id !== id);
+                this.saveTodos();
+                this.render();
+                this.updateStats();
+            }
         }
     }
 
@@ -84,7 +125,14 @@ class TodoApp {
     saveEdit(id, newText) {
         const text = newText.trim();
         if (text === '') {
-            this.showMessage('Task cannot be empty');
+            this.showMessage('Task cannot be empty', 'error');
+            const editInput = document.querySelector('.edit-input');
+            if (editInput) {
+                editInput.style.animation = 'shake 0.3s ease-in-out';
+                setTimeout(() => {
+                    editInput.style.animation = '';
+                }, 300);
+            }
             return;
         }
 
@@ -94,6 +142,7 @@ class TodoApp {
             this.editingId = null;
             this.saveTodos();
             this.render();
+            this.showMessage('Task updated successfully', 'success');
         }
     }
 
@@ -105,12 +154,26 @@ class TodoApp {
     setFilter(filter) {
         this.currentFilter = filter;
         
-        // Update active button
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.filter === filter);
+        // Animate filter change
+        const todoList = document.getElementById('todoList');
+        const items = todoList.querySelectorAll('.todo-item');
+        
+        // Fade out current items
+        items.forEach((item, index) => {
+            setTimeout(() => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px) scale(0.95)';
+            }, index * 50);
         });
         
-        this.render();
+        setTimeout(() => {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            
+            this.render();
+        }, items.length * 50 + 200);
     }
 
     getFilteredTodos() {
@@ -127,15 +190,26 @@ class TodoApp {
     clearCompleted() {
         const completedCount = this.todos.filter(t => t.completed).length;
         if (completedCount === 0) {
-            this.showMessage('No completed tasks to clear');
+            this.showMessage('No completed tasks to clear', 'error');
             return;
         }
 
         if (confirm(`Clear ${completedCount} completed task${completedCount > 1 ? 's' : ''}?`)) {
-            this.todos = this.todos.filter(t => !t.completed);
-            this.saveTodos();
-            this.render();
-            this.updateStats();
+            // Animate completed items removal
+            const completedItems = document.querySelectorAll('.todo-item.completed');
+            completedItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('removing');
+                }, index * 100);
+            });
+
+            setTimeout(() => {
+                this.todos = this.todos.filter(t => !t.completed);
+                this.saveTodos();
+                this.render();
+                this.updateStats();
+                this.showMessage(`Cleared ${completedCount} completed task${completedCount > 1 ? 's' : ''}`, 'success');
+            }, completedItems.length * 100 + 400);
         }
     }
 
@@ -144,7 +218,13 @@ class TodoApp {
         const countElement = document.getElementById('todoCount');
         const clearBtn = document.getElementById('clearCompleted');
         
-        countElement.textContent = `${activeCount} task${activeCount !== 1 ? 's' : ''} remaining`;
+        // Add animation class
+        countElement.classList.add('updating');
+        
+        setTimeout(() => {
+            countElement.textContent = `${activeCount} task${activeCount !== 1 ? 's' : ''} remaining`;
+            countElement.classList.remove('updating');
+        }, 150);
         
         const completedCount = this.todos.filter(t => t.completed).length;
         clearBtn.disabled = completedCount === 0;
@@ -250,34 +330,40 @@ class TodoApp {
         return div.innerHTML;
     }
 
-    showMessage(message) {
+    showMessage(message, type = 'error') {
         // Create a temporary message element
         const messageEl = document.createElement('div');
+        const bgColor = type === 'error' ? '#dc3545' : '#28a745';
+        const icon = type === 'error' ? '⚠️' : '✅';
+        
         messageEl.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #dc3545;
+            background: ${bgColor};
             color: white;
             padding: 12px 20px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             z-index: 1000;
-            animation: slideIn 0.3s ease;
+            animation: messageSlide 0.4s ease-out;
             max-width: 300px;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         `;
-        messageEl.textContent = message;
+        messageEl.innerHTML = `<span style="font-size: 16px;">${icon}</span> ${message}`;
         
         document.body.appendChild(messageEl);
         
         setTimeout(() => {
-            messageEl.style.animation = 'slideOut 0.3s ease';
+            messageEl.style.animation = 'messageSlideOut 0.4s ease-in forwards';
             setTimeout(() => {
                 if (messageEl.parentNode) {
                     messageEl.parentNode.removeChild(messageEl);
                 }
-            }, 300);
+            }, 400);
         }, 3000);
     }
 
@@ -299,10 +385,25 @@ class TodoApp {
 // Add CSS animations
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes slideOut {
+    @keyframes messageSlide {
+        from {
+            opacity: 0;
+            transform: translateX(100%) scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+    
+    @keyframes messageSlideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
         to {
             opacity: 0;
-            transform: translateX(20px);
+            transform: translateX(100%) scale(0.8);
         }
     }
 `;
